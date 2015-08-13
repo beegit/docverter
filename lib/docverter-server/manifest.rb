@@ -19,7 +19,7 @@ class DocverterServer::Manifest
   def self.load_stream(stream)
     self.new(YAML.load(stream))
   end
-  
+
   def initialize(options={})
     @options = options
     @options['input_files'] ||= []
@@ -65,11 +65,11 @@ class DocverterServer::Manifest
 
     options.each do |k,v|
 
-      raise InvalidManifestError.new("Invalid option: #{k}") unless k.match(/^[a-z0-9-]+/)
-      
+      raise DocverterServer::InvalidManifestError.new("Invalid option: #{k}") unless k.match(/^[a-z0-9-]+/)
+
       option_key = k.to_s.gsub('_', '-')
       [v].flatten.each do |option_val|
-        raise InvalidManifestError.new("Invalid option value: #{option_val}") unless option_val.to_s.match(/^[a-zA-Z0-9._-]+/)
+        raise DocverterServer::InvalidManifestError.new("Invalid option value: #{option_val}") unless option_val.to_s.match(/^[a-zA-Z0-9._-]+/)
         if option_val.is_a?(TrueClass) || option_val == 'true'
           command_options << "--#{option_key}"
         else
@@ -84,21 +84,21 @@ class DocverterServer::Manifest
   end
 
   def validate!(dir)
-    raise InvalidManifestError.new("No input files found") unless @options['input_files'] && @options['input_files'].length > 0
+    raise DocverterServer::InvalidManifestError.new("No input files found") unless @options['input_files'] && @options['input_files'].length > 0
 
     Dir.chdir(dir) do
       @options['input_files'].each do |filename|
-        raise InvalidManifestError.new("Invalid input file: #{filename} not found") unless File.exists?(filename)
-        raise InvalidManifestError.new("Invalid input file: #{filename} cannot start with /") if filename.strip[0] == '/'
+        raise DocverterServer::InvalidManifestError.new("Invalid input file: #{filename} not found") unless File.exists?(filename)
+        raise DocverterServer::InvalidManifestError.new("Invalid input file: #{filename} cannot start with /") if filename.strip[0] == '/'
       end
 
-      raise InvalidManifestError.new("'from' key required") unless @options['from']
-      raise InvalidManifestError.new("'to' key required") unless @options['to']
+      raise DocverterServer::InvalidManifestError.new("'from' key required") unless @options['from']
+      raise DocverterServer::InvalidManifestError.new("'to' key required") unless @options['to']
 
-      raise InvalidManifestError.new("Not a valid 'from' type") unless
+      raise DocverterServer::InvalidManifestError.new("Not a valid 'from' type") unless
         DocverterServer::ConversionTypes.valid_input?(@options['from'])
 
-      raise InvalidManifestError.new("Not a valid 'to' type") unless
+      raise DocverterServer::InvalidManifestError.new("Not a valid 'to' type") unless
         DocverterServer::ConversionTypes.valid_output?(@options['to'])
     end
   end
