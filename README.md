@@ -64,7 +64,7 @@ first need to follow the instructions [here](https://haskellonheroku.com/tutoria
     cabal install --flags="embed_data_files" pandoc pandoc-citeproc
 
     cd sandbox
-    tar -cvxf ../pandoc.tar.gz ./bin/pandoc
+    tar -cvzf ../pandoc.tar.gz ./bin/pandoc
     cd ../
 
     file=pandoc.tar.gz
