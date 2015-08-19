@@ -87,4 +87,5 @@ It's is probably good to note here that on a free tier heroku instance, this
 will take at least 2 hours.
 
 This will create an executable that the heroku buildpack will unzip on compile.
-Make sure to setup your S3 bucket so that your `tar.gz` file is publicly available.
+Make sure to setup your S3 bucket so that your `tar.gz` file is publicly available,
+as you will errors when trying to unzip amazons error response.
