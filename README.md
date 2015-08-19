@@ -48,3 +48,43 @@ See `doc/examples/php/markdown_to_pdf.php` for usage documentation.
 
 ###### Python
 See https://github.com/msabramo/pydocverter
+
+## Pandoc Build Instructions For Heroku
+
+Docverter requires `pandoc` and needs it in a gzip'd executable in a publicly
+available file (linked to in `.vendor_urls`). To make one of these, you will
+first need to follow the instructions [here](https://haskellonheroku.com/tutorial/#use-a-one-off-dyno)
+, run `heroku run bash` to get a CLI into your new build machine, then run:
+
+    restore
+
+    cabal update
+
+    cabal install hsb2hs
+    cabal install --flags="embed_data_files" pandoc pandoc-citeproc
+
+    cd sandbox
+    tar -cvxf ../pandoc.tar.gz ./bin/pandoc
+    cd ../
+
+    file=pandoc.tar.gz
+    bucket=$HALCYON_S3_BUCKET
+    resource="/${bucket}/${file}"
+    contentType="application/x-compressed-tar"
+    dateValue=`date -R`
+    stringToSign="PUT\n\n${contentType}\n${dateValue}\n${resource}"
+    s3Key=$HALCYON_AWS_ACCESS_KEY_ID
+    s3Secret=$HALCYON_AWS_SECRET_ACCESS_KEY
+    signature=`echo -en ${stringToSign} | openssl sha1 -hmac ${s3Secret} -binary | base64`
+    curl -L -X PUT -T "${file}" \
+    -H "Host: ${bucket}.s3.amazonaws.com" \
+    -H "Date: ${dateValue}" \
+    -H "Content-Type: ${contentType}" \
+    -H "Authorization: AWS ${s3Key}:${signature}" \
+    https://${bucket}.s3.amazonaws.com/${file}
+
+It's is probably good to note here that on a free tier heroku instance, this
+will take at least 2 hours.
+
+This will create an executable that the heroku buildpack will unzip on compile.
+Make sure to setup your S3 bucket so that your `tar.gz` file is publicly available.
