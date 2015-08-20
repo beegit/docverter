@@ -4,6 +4,7 @@ class DocverterServer::ConversionTypes
     # file extension, pandoc name, visible name, mime type, input, output
     ['asciidoc', 'asciidoc', 'AsciiDoc', 'application/octet-stream', false, true],
     ['docx', 'docx', 'Docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', false, true],
+    ['icml', 'icml', 'Icml', 'application/xml', false, true],
     ['doc', 'doc', 'Doc', 'application/msword', true, false],
     ['epub', 'epub', 'ePub', 'application/epub+zip',  false, true],
     ['groff', 'groff', 'Groff', 'application/x-troff', false, true],
