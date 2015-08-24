@@ -11,6 +11,7 @@ class DocverterServer::ConversionTypes
     ['html', 'html', 'HTML', 'text/html', true, true],
     ['md', 'markdown', 'Markdown', 'application/octet-stream', true, true],
     ['md', 'markdown_strict', 'Markdown', 'application/octet-stream', true, true],
+    ['md', 'markdown+hard_line_breaks', 'Markdown', 'application/octet-stream', true, true],
     ['org', 'orgmode', 'Emacs Org-Mode', 'application/octet-stream', false, true],
     ['mobi', 'mobi', 'Mobi', 'application/octet-stream', false, true],
     ['pdf', 'pdf', 'PDF', 'application/pdf', false, true],
