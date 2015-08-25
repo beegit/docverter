@@ -40,23 +40,22 @@ class DocverterServer::Runner::PDF < DocverterServer::Runner::Base
   end
 
   def run
-    with_manifest do |manifest|
 
-      io = StringIO.new
-      dom = create_java_dom(File.open(input_filename).read)
+    io = StringIO.new
+    dom = create_java_dom(File.open(input_filename).read)
 
-      renderer = build_renderer(dom)
-      renderer.create_pdf(io.to_outputstream)
+    renderer = build_renderer(dom)
+    renderer.create_pdf(io.to_outputstream)
 
-      if manifest['pdf_username'] && manifest['pdf_password']
-        io = encrypt_pdf(io, manifest)
-      end
-
-      @output = generate_output_filename('pdf')
-      File.open(@output, "w+") do |f|
-        f.write(io.string)
-      end
+    if @manifest['pdf_username'] && @manifest['pdf_password']
+      io = encrypt_pdf(io, @manifest)
     end
+
+    @output = generate_output_filename('pdf')
+    File.open(@output, "w+") do |f|
+      f.write(io.string)
+    end
+
     @output
   end
 

@@ -6,12 +6,10 @@ class DocverterServer::App < Sinatra::Base
   set :show_exceptions, false
   set :dump_errors, false
   set :raise_errors, true
-  
+
   post '/convert' do
 
-    dir = Dir.mktmpdir
-
-    Dir.chdir(dir) do
+    Dir.chdir(settings.tmpdir) do
       manifest = DocverterServer::Manifest.new
 
       input_files = params.delete('input_files') || []
@@ -34,9 +32,7 @@ class DocverterServer::App < Sinatra::Base
         manifest[key] = val
       end
 
-      manifest.write('manifest.yml')
-
-      output_file = DocverterServer::Conversion.new(dir).run
+      output_file = DocverterServer::Conversion.new(settings.tmpdir, nil, {}, manifest).run
 
       content_type(DocverterServer::ConversionTypes.mime_type(manifest['to']))
 
@@ -57,6 +53,10 @@ class DocverterServer::App < Sinatra::Base
         end
       end
 
+      # clean up after ourselves
+      manifest.cleanup
+      File.delete(output_file)
+
       @output
     end
 
@@ -66,3 +66,5 @@ class DocverterServer::App < Sinatra::Base
     'hi'
   end
 end
+
+DocverterServer::App.set :tmpdir, Dir.mktmpdir

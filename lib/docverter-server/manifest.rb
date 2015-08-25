@@ -47,6 +47,24 @@ class DocverterServer::Manifest
     @test_mode
   end
 
+  def cleanup
+    @options['input_files'].each do |filename|
+      num_tries = 0
+      max_retries = 10
+
+      while num_tries < max_retries
+        num_tries += 1
+        begin
+            File.delete(filename)
+          break
+        rescue
+          puts "Failed to remove #{filename}; num_tries = #{num_tries}"
+          sleep 0.020
+        end
+      end
+    end
+  end
+
   def command_options
     options = @options.dup
     input_files = options.delete('input_files')
@@ -86,20 +104,18 @@ class DocverterServer::Manifest
   def validate!(dir)
     raise DocverterServer::InvalidManifestError.new("No input files found") unless @options['input_files'] && @options['input_files'].length > 0
 
-    Dir.chdir(dir) do
-      @options['input_files'].each do |filename|
-        raise DocverterServer::InvalidManifestError.new("Invalid input file: #{filename} not found") unless File.exists?(filename)
-        raise DocverterServer::InvalidManifestError.new("Invalid input file: #{filename} cannot start with /") if filename.strip[0] == '/'
-      end
-
-      raise DocverterServer::InvalidManifestError.new("'from' key required") unless @options['from']
-      raise DocverterServer::InvalidManifestError.new("'to' key required") unless @options['to']
-
-      raise DocverterServer::InvalidManifestError.new("Not a valid 'from' type") unless
-        DocverterServer::ConversionTypes.valid_input?(@options['from'])
-
-      raise DocverterServer::InvalidManifestError.new("Not a valid 'to' type") unless
-        DocverterServer::ConversionTypes.valid_output?(@options['to'])
+    @options['input_files'].each do |filename|
+      raise DocverterServer::InvalidManifestError.new("Invalid input file: #{filename} not found") unless File.exists?(filename)
+      raise DocverterServer::InvalidManifestError.new("Invalid input file: #{filename} cannot start with /") if filename.strip[0] == '/'
     end
+
+    raise DocverterServer::InvalidManifestError.new("'from' key required") unless @options['from']
+    raise DocverterServer::InvalidManifestError.new("'to' key required") unless @options['to']
+
+    raise DocverterServer::InvalidManifestError.new("Not a valid 'from' type") unless
+      DocverterServer::ConversionTypes.valid_input?(@options['from'])
+
+    raise DocverterServer::InvalidManifestError.new("Not a valid 'to' type") unless
+      DocverterServer::ConversionTypes.valid_output?(@options['to'])
   end
 end
