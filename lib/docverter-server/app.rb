@@ -41,14 +41,19 @@ class DocverterServer::App < Sinatra::Base
       @output = nil
 
       while num_tries < max_retries
+        num_tries += 1
         begin
           File.open(output_file) do |f|
             @output = f.read
           end
-          num_tries += 1
           break
         rescue
           puts "Failed to open #{output_file}; num_tries = #{num_tries}"
+
+          if num_tries < max_retries
+            @output = ''
+          end
+
           sleep 0.020
         end
       end
