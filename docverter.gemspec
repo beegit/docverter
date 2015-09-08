@@ -22,8 +22,8 @@ Gem::Specification.new do |gem|
   gem.add_dependency('rake')
   gem.add_dependency('mizuno')
   gem.add_dependency('flying_saucer')
-  gem.add_dependency('multi_json')
-  
+  gem.add_dependency('multi_json', '1.5.1')
+
   gem.add_development_dependency("mocha")
   gem.add_development_dependency("shoulda")
 end
