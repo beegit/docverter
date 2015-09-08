@@ -42,7 +42,7 @@ class DocverterServer::App < Sinatra::Base
       while num_tries < MAX_RETRIES
         num_tries += 1
         begin
-          File.open(output_file + "abc") do |f|
+          File.open(output_file) do |f|
             @output = f.read
           end
           break
