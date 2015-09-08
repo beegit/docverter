@@ -6,10 +6,12 @@ class DocverterServer::App < Sinatra::Base
   set :show_exceptions, false
   set :dump_errors, false
   set :raise_errors, true
+  MAX_RETRIES = 10
 
   post '/convert' do
 
     Dir.chdir(settings.tmpdir) do
+      num_tries = 0
       manifest = DocverterServer::Manifest.new
 
       input_files = params.delete('input_files') || []
@@ -33,32 +35,29 @@ class DocverterServer::App < Sinatra::Base
       end
 
       output_file = DocverterServer::Conversion.new(settings.tmpdir, nil, {}, manifest).run
-
       content_type(DocverterServer::ConversionTypes.mime_type(manifest['to']))
 
-      num_tries = 0
-      max_retries = 10
       @output = nil
 
-      while num_tries < max_retries
+      while num_tries < MAX_RETRIES
         num_tries += 1
         begin
-          File.open(output_file) do |f|
+          File.open(output_file + "abc") do |f|
             @output = f.read
           end
           break
-        rescue
+        rescue => ex
           puts "Failed to open #{output_file}; num_tries = #{num_tries}"
 
-          if num_tries < max_retries
-            @output = ''
+          if num_tries >= MAX_RETRIES
+            raise ex
           end
 
+          @output = ''
           sleep 0.020
         end
       end
 
-      # clean up after ourselves
       manifest.cleanup
       File.delete(output_file)
 

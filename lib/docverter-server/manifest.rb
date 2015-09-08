@@ -1,7 +1,8 @@
 require 'yaml'
 
 class DocverterServer::Manifest
-
+  MAX_RETRIES = 10
+  
   def pdf
     @pdf
   end
@@ -50,9 +51,8 @@ class DocverterServer::Manifest
   def cleanup
     @options['input_files'].each do |filename|
       num_tries = 0
-      max_retries = 10
 
-      while num_tries < max_retries
+      while num_tries < MAX_RETRIES
         num_tries += 1
         begin
             File.delete(filename)
