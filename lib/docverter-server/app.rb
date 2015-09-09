@@ -6,6 +6,8 @@ class DocverterServer::App < Sinatra::Base
   set :show_exceptions, false
   set :dump_errors, false
   set :raise_errors, true
+  set :tmpdir, Dir.mktmpdir
+  
   MAX_RETRIES = 10
 
   post '/convert' do
@@ -70,5 +72,3 @@ class DocverterServer::App < Sinatra::Base
     'hi'
   end
 end
-
-DocverterServer::App.set :tmpdir, Dir.mktmpdir
