@@ -1,1 +1,1 @@
-web: bundle exec mizuno -I lib -p $PORT
+web: bundle exec passenger start --daemonize --environment $RACK_ENV --port $PORT --min-instances 2

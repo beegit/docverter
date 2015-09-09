@@ -1,9 +1,5 @@
 require "bundler/gem_tasks"
 
-task :server do
-  sh "jruby -S rackup -Ilib -s mizuno -p 9595"
-end
-
 task :build_examples do
   sh "mkdir -p public/examples"
   Dir.chdir('examples') do

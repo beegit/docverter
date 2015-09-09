@@ -4,8 +4,8 @@ PATH
     docverter-server (1.0.3-java)
       flying_saucer
       mime-types
-      mizuno
       multi_json (= 1.5.1)
+      passenger
       rake
       sinatra
 
@@ -18,24 +18,18 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
-    childprocess (0.5.6)
-      ffi (~> 1.0, >= 1.0.11)
-    choice (0.2.0)
-    ffi (1.9.10-java)
     flying_saucer (0.8.0-java)
     i18n (0.7.0)
     json (1.8.3-java)
     metaclass (0.0.4)
     mime-types (2.6.1)
     minitest (5.8.0)
-    mizuno (0.6.11)
-      childprocess (>= 0.2.6)
-      choice (>= 0.1.0)
-      ffi (>= 1.0.0)
-      rack (>= 1.0.0)
     mocha (1.1.0)
       metaclass (~> 0.0.1)
     multi_json (1.5.1)
+    passenger (5.0.18)
+      rack
+      rake (>= 0.8.1)
     rack (1.6.4)
     rack-protection (1.5.3)
       rack
