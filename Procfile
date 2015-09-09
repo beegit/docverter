@@ -1,1 +1,1 @@
-web: bundle exec passenger start --daemonize --environment $RACK_ENV --port $PORT --min-instances 2
+web: bundle exec passenger start --environment $RACK_ENV --port $PORT --min-instances 2
