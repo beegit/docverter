@@ -1,1 +1,1 @@
-web: bundle exec passenger start --environment $RACK_ENV --port $PORT
+web: bundle exec passenger start -e $RACK_ENV -p $PORT --max-pool-size 3
