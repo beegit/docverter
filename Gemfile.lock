@@ -5,7 +5,7 @@ PATH
       flying_saucer
       mime-types
       multi_json (= 1.5.1)
-      passenger
+      puma
       rake
       sinatra
 
@@ -27,9 +27,7 @@ GEM
     mocha (1.1.0)
       metaclass (~> 0.0.1)
     multi_json (1.5.1)
-    passenger (5.0.18)
-      rack
-      rake (>= 0.8.1)
+    puma (2.13.4-java)
     rack (1.6.4)
     rack-protection (1.5.3)
       rack

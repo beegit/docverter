@@ -20,7 +20,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency('mime-types')
   gem.add_dependency('sinatra')
   gem.add_dependency('rake')
-  gem.add_dependency('passenger')
+  gem.add_dependency('puma')
   gem.add_dependency('flying_saucer')
   gem.add_dependency('multi_json', '1.5.1')
 
