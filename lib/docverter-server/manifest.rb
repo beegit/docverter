@@ -106,7 +106,6 @@ class DocverterServer::Manifest
 
     @options['input_files'].each do |filename|
       raise DocverterServer::InvalidManifestError.new("Invalid input file: #{filename} not found") unless File.exists?(filename)
-      raise DocverterServer::InvalidManifestError.new("Invalid input file: #{filename} cannot start with /") if filename.strip[0] == '/'
     end
 
     raise DocverterServer::InvalidManifestError.new("'from' key required") unless @options['from']

@@ -19,17 +19,16 @@ module DocverterServer
       end
 
       def generate_output_filename(extension)
-        "output.#{SecureRandom.hex(10)}.#{extension}"
+        File.join(@directory, "output.#{SecureRandom.hex(10)}.#{extension}")
       end
 
       def run_command(options)
-        p options
         output = ""
         cmd = Shellwords.join(options) + " 2>&1"
-        p cmd
         IO.popen(cmd) do |io|
           output = io.read
         end
+        puts "Command complete: options: #{options}, result: #{$?}"
         if $?.exitstatus != 0
           raise DocverterServer::CommandError.new(output)
         end

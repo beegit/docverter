@@ -4,11 +4,11 @@ class DocverterServer::Runner::Pandoc < DocverterServer::Runner::Base
     options = @manifest.command_options
 
     extension = DocverterServer::ConversionTypes.extension(@manifest['to'])
-    output = generate_output_filename(extension)
+    output_file_name = generate_output_filename(extension)
 
-    options = ['pandoc', '--standalone', "--output=#{output}"] + options
+    options = ['pandoc', '--standalone', "--output=#{output_file_name}"] + options
     run_command(options)
-    output
+    output_file_name
   end
 
 end
