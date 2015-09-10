@@ -3,6 +3,7 @@ module DocverterServer; end
 require 'docverter-server/version'
 require 'docverter-server/error'
 require 'docverter-server/conversion_types'
+require 'docverter-server/logging'
 require 'docverter-server/manifest'
 require 'docverter-server/runner/base'
 require 'docverter-server/runner/pandoc'

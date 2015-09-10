@@ -2,7 +2,8 @@ require 'sinatra/base'
 require 'fileutils'
 
 class DocverterServer::App < Sinatra::Base
-
+  include Logging
+  
   set :show_exceptions, false
   set :dump_errors, false
   set :raise_errors, true
@@ -36,29 +37,31 @@ class DocverterServer::App < Sinatra::Base
       manifest[key] = val
     end
 
-    output_file_name = DocverterServer::Conversion.new(tmp_dir, nil, {}, manifest).run
+    output_file_path = DocverterServer::Conversion.new(tmp_dir, nil, {}, manifest).run
     content_type(DocverterServer::ConversionTypes.mime_type(manifest['to']))
 
     while num_tries < MAX_RETRIES
       num_tries += 1
-      puts "Attempt ##{num_tries}: Attempting to open converted file '#{File.join(tmp_dir, output_file_name)}'"
+      
       begin
-        File.open(output_file_name) do |f|
+        File.open(output_file_path) do |f|
           @output = f.read
         end
         break
       rescue => ex
+        logger.warn "Open Output File: File open failed on attempt ##{num_tries} - #{output_file_path}"
+
         if num_tries >= MAX_RETRIES
           raise ex
         end
 
         @output = ''
-        sleep 0.025
+        sleep 0.02
       end
     end
 
     manifest.cleanup
-    File.delete(output_file_name)
+    File.delete(output_file_path)
 
     @output
   end

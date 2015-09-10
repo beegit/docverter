@@ -1,6 +1,8 @@
 require 'yaml'
 
 class DocverterServer::Manifest
+  include Logging
+  
   MAX_RETRIES = 10
   
   def pdf
@@ -11,8 +13,8 @@ class DocverterServer::Manifest
     @pdf_page_size
   end
 
-  def self.load_file(filename)
-    File.open(filename) do |f|
+  def self.load_file(file_path)
+    File.open(file_path) do |f|
       self.load_stream(f)
     end
   end
@@ -34,8 +36,8 @@ class DocverterServer::Manifest
     @options[key] = val
   end
 
-  def write(filename)
-    File.open(filename, "w+") do |f|
+  def write(file_path)
+    File.open(file_path, "w+") do |f|
       write_to_stream(f)
     end
   end
@@ -49,17 +51,17 @@ class DocverterServer::Manifest
   end
 
   def cleanup
-    @options['input_files'].each do |filename|
+    @options['input_files'].each do |file_path|
       num_tries = 0
 
       while num_tries < MAX_RETRIES
         num_tries += 1
         begin
-            File.delete(filename)
+            File.delete(file_path)
           break
         rescue
-          puts "Failed to remove #{filename}; num_tries = #{num_tries}"
-          sleep 0.020
+          logger.warn "Delete Input File: File delete failed on attempt ##{num_tries} - #{file_path}"
+          sleep 0.02
         end
       end
     end
@@ -104,8 +106,8 @@ class DocverterServer::Manifest
   def validate!(dir)
     raise DocverterServer::InvalidManifestError.new("No input files found") unless @options['input_files'] && @options['input_files'].length > 0
 
-    @options['input_files'].each do |filename|
-      raise DocverterServer::InvalidManifestError.new("Invalid input file: #{filename} not found") unless File.exists?(filename)
+    @options['input_files'].each do |file_path|
+      raise DocverterServer::InvalidManifestError.new("Invalid input file: #{file_path} not found") unless File.exists?(file_path)
     end
 
     raise DocverterServer::InvalidManifestError.new("'from' key required") unless @options['from']

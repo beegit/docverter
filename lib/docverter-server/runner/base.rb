@@ -5,6 +5,8 @@ require 'shellwords'
 module DocverterServer
   module Runner
     class Base
+      include Logging
+      
       attr_reader :directory, :input_filename, :options
 
       def initialize(directory, input_filename = nil, options= {}, manifest=nil)
@@ -25,12 +27,15 @@ module DocverterServer
       def run_command(options)
         output = ""
         cmd = Shellwords.join(options) + " 2>&1"
+
         IO.popen(cmd) do |io|
           output = io.read
         end
-        puts "Command complete: options: #{options}, result: #{$?}"
+        
         if $?.exitstatus != 0
           raise DocverterServer::CommandError.new(output)
+        else
+          logger.info "Command Complete: Result: #{$?} - Options: #{options}"
         end
       end
     end
