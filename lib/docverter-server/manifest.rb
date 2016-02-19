@@ -20,7 +20,9 @@ class DocverterServer::Manifest
   end
 
   def self.load_stream(stream)
-    self.new(YAML.load(stream))
+    yaml = YAML.load(stream)
+    self.new(yaml)
+    puts yaml
   end
 
   def initialize(options={})
@@ -43,7 +45,7 @@ class DocverterServer::Manifest
   end
 
   def write_to_stream(stream)
-    stream.write YAML.dump(@options)
+    YAML.dump(@options, stream)
   end
 
   def test_mode?
